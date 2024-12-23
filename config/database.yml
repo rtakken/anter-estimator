@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: antler_estimator_development
+
+test:
+  <<: *default
+  database: antler_estimator_test
+
+staging:
+  <<: *default
+  database: antler_estimator_staging
+
+production:
+  <<: *default
+  database: antler_estimator_production
