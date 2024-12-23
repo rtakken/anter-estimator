@@ -1,0 +1,34 @@
+<div class="container mx-auto p-6">
+  <div class="flex justify-between mb-4">
+    <%= link_to "New Conversation", new_chat_bot_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
+  <table class="min-w-full bg-white border border-gray-300">
+    <thead>
+      <tr>
+        <th class="px-6 py-3 border-b border-gray-300 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Conversation</th>
+        <th class="px-6 py-3 border-b border-gray-300 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Last Message</th>
+        <th class="px-6 py-3 border-b border-gray-300 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created At</th>
+        <th class="px-6 py-3 border-b border-gray-300 bg-gray-100"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @conversations.each do |conversation| %>
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 border-b border-gray-300">
+            #<%= conversation.id %>
+          </td>
+          <td class="px-6 py-4 border-b border-gray-300">
+            <%= conversation.messages.last&.content&.truncate(50) || "No messages" %>
+          </td>
+          <td class="px-6 py-4 border-b border-gray-300">
+            <%= conversation.created_at.strftime("%B %d, %Y") %>
+          </td>
+          <td class="px-6 py-4 border-b border-gray-300 text-right space-x-2">
+            <%= link_to "View", chat_bot_path(conversation, conversation_id: conversation.id), class: "text-blue-500 hover:text-blue-700" %>
+            <%= button_to "Delete", chat_bot_path(conversation, conversation_id: conversation.id), method: :delete, class: "text-red-500 hover:text-red-700", data: { confirm: "Are you sure?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
