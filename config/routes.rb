@@ -3,7 +3,8 @@ Rails.application.routes.draw do
 
   root "dashboard#index"
 
-  resources :chat_bot, only: [:index, :create, :show, :new, :destroy]
+  resources :messages, only: [:create]
+  resources :conversations, only: [:index, :show, :new, :destroy]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

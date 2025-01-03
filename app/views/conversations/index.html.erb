@@ -1,6 +1,6 @@
 <div class="container mx-auto p-6">
   <div class="flex justify-between mb-4">
-    <%= link_to "New Conversation", new_chat_bot_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    <%= link_to "New Conversation", new_conversation_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
   </div>
   <table class="min-w-full bg-white border border-gray-300">
     <thead>
@@ -24,8 +24,8 @@
             <%= conversation.created_at.strftime("%B %d, %Y") %>
           </td>
           <td class="px-6 py-4 border-b border-gray-300 text-right space-x-2">
-            <%= link_to "View", chat_bot_path(conversation, conversation_id: conversation.id), class: "text-blue-500 hover:text-blue-700" %>
-            <%= button_to "Delete", chat_bot_path(conversation, conversation_id: conversation.id), method: :delete, class: "text-red-500 hover:text-red-700", data: { confirm: "Are you sure?" } %>
+            <%= link_to "View", conversation_path(conversation), class: "text-blue-500 hover:text-blue-700" %>
+            <%= button_to "Delete", conversation_path(conversation), method: :delete, class: "text-red-500 hover:text-red-700", data: { confirm: "Are you sure?" } %>
           </td>
         </tr>
       <% end %>

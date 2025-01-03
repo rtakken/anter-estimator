@@ -1,6 +1,0 @@
-<%= turbo_frame_tag dom_id(message) do %>
-    <div class="<%= message.role == "assistant" ? "bg-gray-100" : "" %> flex flex-row items-start">
-        <div class="font-semibold w-24 flex-shrink-0"><%= message.role %></div>
-        <div class="flex-1">: <%= message.content %></div>
-    </div>
-<% end %>

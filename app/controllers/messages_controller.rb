@@ -1,27 +1,7 @@
-class ChatBotController < ApplicationController
-  def index
-    @conversations = current_user.conversations
-  end
-
-  def show
-    @conversation = current_user.conversations.find(params[:id])
-    @messages = @conversation.messages
-  end
-
-  def new
-    @conversation = current_user.conversations.create(title: "New Conversation")
-    redirect_to chat_bot_path(@conversation)
-  end
-
-  def destroy
-    @conversation = current_user.conversations.find(params[:id])
-    @conversation.destroy
-    redirect_to chat_bot_index_path
-  end
-
+class MessagesController < ApplicationController
   def create
     @conversation = current_user.conversations.find(params[:id])
-    
+
     adapter = Intelligence::Adapter.build :google do
       key   ENV.fetch("GOOGLE_API_KEY", nil)
       chat_options do
@@ -49,11 +29,8 @@ class ChatBotController < ApplicationController
 
     request = Intelligence::ChatRequest.new(adapter: adapter)
 
-    # Create user message
-    user_message = @conversation.messages.create!(
-      role: 'user',
-      content: params[:message]
-    )
+    user_message = @conversation.messages.create!(message_params)
+
 
     tools = []
     # Prepare conversation history for AI
@@ -72,20 +49,19 @@ class ChatBotController < ApplicationController
     end
 
     # Handle photo upload if present
-    if params[:photo].present?
-      photo_message = Intelligence::Message.new(:user)
-      photo_message << Intelligence::MessageContent::Binary.new(
-        bytes: params[:photo].read,
-        content_type: params[:photo].content_type
+    if message_params[:image].present?
+      image_message = Intelligence::Message.new(:user)
+      image_message << Intelligence::MessageContent::Binary.new(
+        bytes: user_message.image.download,
+        content_type: user_message.image.content_type
       )
-      ai_conversation.messages << photo_message
+      ai_conversation.messages << image_message
     end
 
     response = request.chat(ai_conversation)
     if response.success?
       response.result.choices.each do |choice|
         choice.message.each_content do |content|
-          debugger
           if content.is_a?(Intelligence::MessageContent::ToolCall)
             # Process the tool call
             if content.tool_name == :get_weather
@@ -115,6 +91,11 @@ class ChatBotController < ApplicationController
       flash[:error] = "Error: #{response.result.error_description}"
     end
 
-    redirect_to chat_bot_path(@conversation)  
+    redirect_to conversation_path(@conversation)
+  end
+
+  private
+  def message_params
+    params.require(:message).permit(:content, :image, :role)
   end
 end
